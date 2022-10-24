@@ -17,14 +17,24 @@ def handle_connect(sid):
     logging.info("Socket connected: {}".format(sid))
 
 
-@app.get("/bot")
-def bot_page():
-    return render_template("/bot.html")
+@app.get("/<path_name>")
+def bot_page(path_name):
+    return render_template("/{}.html".format(path_name))
+    # except Exception as exc:
+    #     logging.exception("Could not load template: {}".format(
+    #         str(exc)
+    #     ))
+    #     return "Not found", 404
 
 
 @app.get("/")
-def root_path():
+def return_root_path():
     return "Hello World"
+
+
+@app.get("/healthz")
+def check_healthz():
+    return "OK"
 
 
 if __name__ == "__main__":
