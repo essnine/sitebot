@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-from os import getcwd
 import logging
 import eventlet
 eventlet.monkey_patch()
@@ -8,7 +7,7 @@ eventlet.monkey_patch()
 
 app = Flask(
     import_name=__name__,
-    static_folder="static/",
+    template_folder="static/html",
 )
 socket_app = SocketIO(app, async_mode="eventlet")
 
@@ -20,9 +19,7 @@ def handle_connect(sid):
 
 @app.get("/bot")
 def bot_page():
-    return render_template(
-        "{}/static/html/bot.html".format(getcwd())
-    )
+    return render_template("/bot.html")
 
 
 @app.get("/")
