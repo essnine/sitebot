@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui.min.css" />
+    <link rel="stylesheet" href="/css/botui-theme-custom.css" />
     <title>bot-ly</title>
+    <script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/botui/build/botui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="/scripts/bot.js"></script>
 </head>
-<body>
-    <p>Bot Bot.</p>
-    <div id="essnine-sitebot">
-        <bot-ui></botui>
+
+<body onload=onStart()>
+    <div class="botui-app-container" id="sitebot">
+        <bot-ui id="chatWindow" style="display: block;"></bot-ui>
+        <div style="bottom: 0; right: 0; position: fixed;">
+            <input type="image" src="/img/sitebot-icon.png" onclick="toggleButton(this)"
+            style="max-height: 5em; max-width: 5em; padding: 1em; outline-width: 0;">
+        </div>
     </div>
 </body>
+<footer>
+</footer>
 </html>

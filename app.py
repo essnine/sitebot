@@ -1,8 +1,8 @@
-from flask import Flask, render_template
+import eventlet
+eventlet.monkey_patch(socket=True, thread=True)
+from flask import Flask, render_template, send_file
 from flask_socketio import SocketIO
 import logging
-import eventlet
-eventlet.monkey_patch()
 
 
 app = Flask(
@@ -17,9 +17,9 @@ def handle_connect(sid):
     logging.info("Socket connected: {}".format(sid))
 
 
-@app.get("/<path_name>")
-def bot_page(path_name):
-    return render_template("/{}.html".format(path_name))
+@app.get("/bot")
+def bot_page():
+    return render_template("/bot.html")
     # except Exception as exc:
     #     logging.exception("Could not load template: {}".format(
     #         str(exc)
@@ -27,9 +27,36 @@ def bot_page(path_name):
     #     return "Not found", 404
 
 
+@app.get("/scripts/<script_name>")
+def fetch_script_name(script_name):
+    return send_file(
+        "static/js/{}".format(
+                script_name
+            )
+        )
+
+
+@app.get("/css/<stylesheet_name>")
+def fetch_stylesheet_name(stylesheet_name):
+    return send_file(
+        "static/css/{}".format(
+                stylesheet_name
+            )
+        )
+
+
+@app.get("/img/<image_name>")
+def fetch_image_name(image_name):
+    return send_file(
+        "static/img/{}".format(
+                image_name
+            )
+        )
+
+
 @app.get("/")
 def return_root_path():
-    return "Hello World"
+    return render_template("/home.html")
 
 
 @app.get("/healthz")
