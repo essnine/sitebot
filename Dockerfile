@@ -1,11 +1,15 @@
-FROM python:3.10-alpine
+FROM python:3.9-alpine
 
 WORKDIR /app
 
 COPY requirements.txt ./
 
-RUN apk add libpq-dev
+COPY . /app/
+
+RUN apk add --no-cache --virtual build-dependencies libpq-dev build-base
 
 RUN pip install -r requirements.txt
 
-CMD ["gunicorn", "app:app", "-k=eventlet", "--bind=127.0.0.1:8080", "--access-logfile=-", "--reload"]
+EXPOSE 8080
+
+CMD ["gunicorn", "app:app", "-k=eventlet", "--bind=0.0.0.0:8080", "--access-logfile=-", "--reload"]
