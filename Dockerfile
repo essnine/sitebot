@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY requirements.txt ./
 
-RUN apk add install libpq-dev
+RUN apk add libpq-dev
 
 RUN pip install -r requirements.txt
 
