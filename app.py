@@ -1,3 +1,4 @@
+from urllib import response
 import eventlet
 eventlet.monkey_patch(socket=True, thread=True)
 from flask import Flask, render_template, send_file
@@ -5,16 +6,43 @@ from flask_socketio import SocketIO
 import logging
 
 
+RESPONSES = {
+    "What is your name?": "Baburao Ganpatrao Apte",
+    "Are you a robot?": "Are you a captcha?",
+    "Are you human?": "Thankfully, no.",
+    "How are you?": "Same panic, different disco.",
+    "What's up?": "Waasaaaaaaaaapp!",
+    "Good Morning": "Good Morning",
+    "Good Evening": "Good Evening",
+    "What can you do?": "Small talk. For now, at least.",
+    "Is this the real life?": "Is this just fantasy? ",
+    "Tell me a joke": "Your love life",
+    "What is the time right now?": "It is {time_val} {am_pm} right now.",
+    "What is the date today?": "It's {day} the {dd} of {mm} {yyyy}. ",
+    "How's the weather like?": "it's {temp} and {summary}",
+    "How's the weather in {location}?": "it's {temp} and {summary} in {location} ",
+    "Is it going to {weather condition} today?": "Boolean based on current weather condition of default or given location"
+}
+
+
 app = Flask(
     import_name=__name__,
     template_folder="static/html",
 )
-socket_app = SocketIO(app, async_mode="eventlet")
+socket_app = SocketIO(app, async_mode="eventlet", namespaces=["botMessage"])
 
 
-@socket_app.on("connect")
+@socket_app.on("connect", namespace="botMessage")
 def handle_connect(sid):
     logging.info("Socket connected: {}".format(sid))
+
+
+@socket_app.on("userMessage", namespace="botMessage")
+def handle_user_message(sid, data):
+    logging.debug(data)
+    message = data.get("message")
+    response = RESPONSES.get(message, "Sorry, I do not understand")
+    socket_app.emit("botResponse", {"message": response})
 
 
 @app.get("/bot")

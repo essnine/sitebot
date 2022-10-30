@@ -1,6 +1,33 @@
+var botui = new BotUI('sitebot');
+var hostURL = window.location.host;
+const socket = io(
+    hostURL+"/botMessage",
+    {
+        reconnectionDelayMax: 10000,
+    }
+); // imported in bot.html
+
+socket.connect();
+
+const responses = {
+    "What is your name?": "Baburao Ganpatrao Apte",
+    "Are you a robot?": "Are you a captcha?",
+    "Are you human?": "Thankfully, no.",
+    "How are you?": "Same panic, different disco.",
+    "What's up?": "Waasaaaaaaaaapp!",
+    "Good Morning": "Good Morning",
+    "Good Evening": "Good Evening",
+    "What can you do?": "Small talk. For now, at least.",
+    "Is this the real life?": "Is this just fantasy? ",
+    "Tell me a joke": "Your love life",
+    "What is the time right now?": "It is {time_val} {am_pm} right now.",
+    "What is the date today?": "It's {day} the {dd} of {mm} {yyyy}. ",
+    "How's the weather like?": "it's {temp} and {summary}",
+    "How's the weather in {location}?": "it's {temp} and {summary} in {location} ",
+    "Is it going to {weather condition} today?": "Boolean based on current weather condition of default or given location"
+}
 
 function load_bot() {
-    var botui = new BotUI('sitebot');
     botui.message.add({
         content: 'Hello There!'
     }).then(function () { // wait till its shown
@@ -12,9 +39,46 @@ function load_bot() {
             action: {
                 placeholder: 'Say something',
             }
+        }).then(function (res) {
+            checkResponse(res);
         });
     });
 }
+
+function setResponseAndAddAction(res) {
+    botui.message.add({
+        content: res
+    }).then(function () { // wait till its shown
+        botui.action.text({ // show next message
+            action: {
+                placeholder: 'Say something',
+            }
+        }).then(function (res) {
+            checkResponse(res);
+            socket.emit(
+                "userMessage",
+                {
+                    "message": res
+                }
+            )
+        });
+    });
+}
+
+function checkResponse(res) {
+    var resp = responses[res.value];
+    console.log(resp);
+    if (resp == null) {
+        resp = "Unknown value"
+    }
+    setResponseAndAddAction(resp);
+}
+
+
+socket.on("botResponse", (data) => {
+    setResponseAndAddAction(data.message)
+    }
+);
 
 
 function toggleButton() {
