@@ -35,41 +35,6 @@ function load_bot() {
     });
 }
 
-function setResponseAndAddAction(res) {
-    botui.message.add({
-        content: res
-    }).then(function () { // wait till its shown
-        botui.action.text({ // show next message
-            action: {
-                placeholder: 'Say something',
-            }
-        }).then(function (res) {
-            checkResponse(res);
-            socket.emit(
-                "userMessage",
-                {
-                    "message": res
-                }
-            )
-        });
-    });
-}
-
-function checkResponse(res) {
-    var resp = responses[res.value];
-    console.log(resp);
-    if (resp == null) {
-        resp = "Unknown value"
-    }
-    setResponseAndAddAction(resp);
-}
-
-
-socket.on("botResponse", (data) => {
-    setResponseAndAddAction(data.message)
-    }
-);
-
 
 function setResponseAndAddAction(res) {
     botui.message.add({
