@@ -4,63 +4,49 @@ CONST_RESPONSES_MAP = {
             "validResponses": [
                     "Baburao Ganpatrao Apte",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "Are you a robot?":
         {
             "validResponses": [
                     "Are you a captcha?",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "Are you human?":
         {
             "validResponses": [
                     "Thankfully, no.",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "How are you?":
         {
             "validResponses": [
                     "Same panic, different disco.",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "What's up?":
         {
             "validResponses": [
                     "Waasaaaaaaaaapp!",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "Good Morning":
         {
             "validResponses": [
                     "Good Morning",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "Good Evening":
         {
             "validResponses": [
                     "Good Evening",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "What can you do?":
         {
@@ -69,27 +55,21 @@ CONST_RESPONSES_MAP = {
                     "Make you smile, maybe? :)",
                     "Definitely not sarcasm, I'm pathologically sincere.",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "Is this the real life?":
         {
             "validResponses": [
                     "Is this just fantasy?",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "Tell me a joke":
         {
             "validResponses": [
                     "Your love life",
                 ],
-            "postProcessSequence": [
-                "select_answer",
-            ]
+            "postProcessSequence": []
         },
     "What is the time right now?":
         {
@@ -97,7 +77,6 @@ CONST_RESPONSES_MAP = {
                     "It is {hh_mm} right now.",
                 ],
             "postProcessSequence": [
-                "select_answer",
                 "handle_time",
                 
             ]
@@ -108,7 +87,6 @@ CONST_RESPONSES_MAP = {
                     "It's {day} the {dd} of {mm} {yyyy}.",
                 ],
             "postProcessSequence": [
-                "select_answer",
                 "handle_time",
             ]
         },
@@ -118,7 +96,6 @@ CONST_RESPONSES_MAP = {
                     "Where I am, it's {temp} and {summary}",
                 ],
             "postProcessSequence": [
-                "select_answer",
                 "handle_weather",
             ]
         },
@@ -128,7 +105,6 @@ CONST_RESPONSES_MAP = {
                     "It's {temp} and {summary} in {location}",
                 ],
             "postProcessSequence": [
-                "select_answer",
                 "handle_weather",
             ]
         },
@@ -138,8 +114,14 @@ CONST_RESPONSES_MAP = {
                     "{bool}, it is going to {weather_condition} today",
                 ],
             "postProcessSequence": [
-                "select_answer",
                 "handle_weather",
             ]
-        }"
+        },
+    "ERR_SYS_BOT_DETECT_FAIL":
+        {
+            "validResponses": [
+                    "Sorry, I do not understand",
+                ],
+            "postProcessSequence": []
+        },
 }

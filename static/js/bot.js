@@ -1,6 +1,17 @@
+var botui = new BotUI('sitebot');
+var hostURL = window.location.host;
+const chatWin = document.getElementById("chatWindow");
+const socket = io(
+    hostURL+"/botMessage",
+    {
+        reconnectionDelayMax: 10000,
+    }
+); // imported in bot.html
+
+socket.connect();
+
 
 function load_bot() {
-    var botui = new BotUI('sitebot');
     botui.message.add({
         content: 'Hello There!'
     }).then(function () { // wait till its shown
@@ -12,13 +23,56 @@ function load_bot() {
             action: {
                 placeholder: 'Say something',
             }
+        }).then(function (res) {
+            // checkResponse(res);
+            socket.emit(
+                "userMessage",
+                {
+                    "message": res
+                }
+            )
         });
     });
 }
 
 
+function setResponseAndAddAction(res) {
+    botui.message.add({
+        content: res
+    }).then(function () { // wait till its shown
+        botui.action.text({ // show next message
+            action: {
+                placeholder: 'Say something',
+            }
+        }).then(function (res) {
+            // checkResponse(res);
+            socket.emit(
+                "userMessage",
+                {
+                    "message": res
+                }
+            )
+        });
+    });
+}
+
+function checkResponse(res) {
+    var resp = responses[res.value];
+    console.log(resp);
+    if (resp == null) {
+        resp = "Unknown value"
+    }
+    setResponseAndAddAction(resp);
+}
+
+
+socket.on("botResponse", (data) => {
+        setResponseAndAddAction(data.message);
+    }
+);
+
+
 function toggleButton() {
-    chatWin = document.getElementById("chatWindow");
     toggleMap = {
         "block": "none",
         "none": "block"
