@@ -6,7 +6,7 @@ COPY requirements.txt ./
 
 COPY . /app/
 
-RUN apk add --no-cache --virtual build-dependencies libpq-dev build-base
+RUN apk add --no-cache --virtual libpq-dev build-base
 
 RUN pip install -r requirements.txt
 
