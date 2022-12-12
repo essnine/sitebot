@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8080
 
-CMD ["gunicorn", "app:app", "-k=eventlet", "--bind=0.0.0.0:8080", "--access-logfile=-", "--reload"]
+CMD ["gunicorn", "app:app", "-k=eventlet", "--bind=0.0.0.0:8080", "--access-logfile=-"]
