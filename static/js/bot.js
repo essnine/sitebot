@@ -38,7 +38,8 @@ function load_bot() {
 
 function setResponseAndAddAction(res) {
     botui.message.add({
-        content: res
+        content: res,
+        delay: 500,
     }).then(function () { // wait till its shown
         botui.action.text({ // show next message
             action: {
