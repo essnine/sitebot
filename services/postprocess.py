@@ -4,7 +4,7 @@ import re
 from datetime import datetime as dt
 from random import choice
 
-from thefuzz.fuzz import ratio
+from thefuzz.fuzz import token_set_ratio as ratio
 
 from constants.responses import CONST_RESPONSES_MAP
 from constants.config import Constants
@@ -37,18 +37,20 @@ class UserMessage:
         """
         current_time = dt.now()
         timevars: dict = {
-            "hh_mm": current_time.time,
+            "hh_mm": current_time.strftime("%H:%M"),
             "day": current_time.strftime("%A"),
             "dd": current_time.day,
             "mm": current_time.month,
             "yyyy": current_time.year,
         }
+        print(self.raw_response_entities)
         response_map = {
             i: timevars.get(i) for i in self.raw_response_entities
         }
         if None in response_map.values():
             logging.exception("time values error, state is: {}".format(str(timevars)))
         else:
+            print(response_map)
             self.processed_response = self.raw_response.format(**response_map)
 
     def handle_weather(self):
@@ -56,7 +58,7 @@ class UserMessage:
         logging.warning(
             "weather component not implemented yet: {}".format(weather_component)
         )
-        pass
+        self.processed_response = "I don't know how to answer that yet."
 
     def fetch_response_entities(self):
         match_list = []
@@ -71,14 +73,15 @@ class UserMessage:
             user_query: str = self.user_query
             logging.info(user_query)
             if CONST_RESPONSES_MAP.get(user_query):
-                possible_response_matches = [CONST_RESPONSES_MAP.get(user_query)]
+                possible_response_matches = [(CONST_RESPONSES_MAP.get(user_query), 100)]
             else:
                 possible_response_matches = []
                 for possible_match in CONST_RESPONSES_MAP:
                     match_ratio = ratio(user_query, possible_match)
                     if match_ratio >= CONSTANTS.query_fuzzy_match_threshold:
                         possible_response_matches.append((possible_match, match_ratio))
-            if len(possible_response_matches):    
+            if len(possible_response_matches):
+                print(possible_response_matches)
                 possible_response_matches.sort(key=lambda x: x[1], reverse=True)
                 final_response = CONST_RESPONSES_MAP[possible_response_matches[0][0]]
             else:
@@ -94,6 +97,7 @@ class UserMessage:
 
     def run(self):
         self.select_answer()
+        self.fetch_response_entities()
         if len(self.post_process_sequence):
             for func in self.post_process_sequence:
                 getattr(self, func)()
