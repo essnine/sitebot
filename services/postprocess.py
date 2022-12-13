@@ -25,7 +25,7 @@ class UserMessage:
 
         self.run()
 
-    def handle_time(self, entities: list):
+    def handle_time(self):
         """adds a time value in HH:MM to input string,/
         which has to be formattable
 
@@ -51,7 +51,7 @@ class UserMessage:
         else:
             self.processed_response = self.raw_response.format(**response_map)
 
-    def handle_weather(self, entities: list):
+    def handle_weather(self):
         weather_component: str = ""
         logging.warning(
             "weather component not implemented yet: {}".format(weather_component)
