@@ -1,2 +1,2 @@
 class Constants:
-    query_fuzzy_match_threshold = 80
+    query_fuzzy_match_threshold = 90
