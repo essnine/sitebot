@@ -1,6 +1,5 @@
-from urllib import response
 import eventlet
-import logging
+from loguru import logger
 
 from flask import Flask, render_template, send_file     # type: ignore
 from flask_socketio import SocketIO, emit     # type: ignore
@@ -11,19 +10,24 @@ app = Flask(
     import_name=__name__,
     template_folder="static/html",
 )
-socket_app = SocketIO(app, async_mode="eventlet", namespace=["/botMessage"])
+socket_app = SocketIO(
+    app,
+    async_mode="eventlet",
+    namespace=["/botMessage"],
+    logger=True,
+    )
 
 
 @socket_app.on("connect", namespace="botMessage")
 def handle_connect(sid):
-    logging.info("Socket connected: {}".format(sid))
+    logger.info("Socket connected: {}".format(sid))
 
 
 @socket_app.on("userMessage", namespace="/botMessage")
 def handle_user_message(user_json):
     # TODO: add handler for socket message to fetch response from chatbot
-    print("user message :{}".format(str(user_json)))
-    logging.debug(user_json.keys())
+    logger.info("user message :{}".format(str(user_json)))
+    logger.debug(user_json.keys())
     responseObj = UserMessage(user_json.get("message", {}).get("value", ""))
     emit("botResponse", {"message": str(responseObj)})
 
@@ -32,7 +36,7 @@ def handle_user_message(user_json):
 def bot_page():
     return render_template("/bot.html")
     # except Exception as exc:
-    #     logging.exception("Could not load template: {}".format(
+    #     logger.exception("Could not load template: {}".format(
     #         str(exc)
     #     ))
     #     return "Not found", 404
@@ -80,5 +84,4 @@ if __name__ == "__main__":
         app,
         host="0.0.0.0",
         port=8080,
-        debug=True,
     )
