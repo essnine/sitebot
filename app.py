@@ -1,55 +1,42 @@
-from urllib import response
 import eventlet
+from loguru import logger
+
+from flask import Flask, render_template, send_file     # type: ignore
+from flask_socketio import SocketIO, emit     # type: ignore
+from services.postprocess import UserMessage
+
 eventlet.monkey_patch(socket=True, thread=True)
-from flask import Flask, render_template, send_file
-from flask_socketio import SocketIO
-import logging
-
-
-RESPONSES = {
-    "What is your name?": "Baburao Ganpatrao Apte",
-    "Are you a robot?": "Are you a captcha?",
-    "Are you human?": "Thankfully, no.",
-    "How are you?": "Same panic, different disco.",
-    "What's up?": "Waasaaaaaaaaapp!",
-    "Good Morning": "Good Morning",
-    "Good Evening": "Good Evening",
-    "What can you do?": "Small talk. For now, at least.",
-    "Is this the real life?": "Is this just fantasy? ",
-    "Tell me a joke": "Your love life",
-    "What is the time right now?": "It is {time_val} {am_pm} right now.",
-    "What is the date today?": "It's {day} the {dd} of {mm} {yyyy}. ",
-    "How's the weather like?": "it's {temp} and {summary}",
-    "How's the weather in {location}?": "it's {temp} and {summary} in {location} ",
-    "Is it going to {weather condition} today?": "Boolean based on current weather condition of default or given location"
-}
-
-
 app = Flask(
     import_name=__name__,
     template_folder="static/html",
 )
-socket_app = SocketIO(app, async_mode="eventlet", namespaces=["botMessage"])
+socket_app = SocketIO(
+    app,
+    async_mode="eventlet",
+    namespace=["/botMessage"],
+    logger=True,
+    )
 
 
 @socket_app.on("connect", namespace="botMessage")
 def handle_connect(sid):
-    logging.info("Socket connected: {}".format(sid))
+    logger.info("Socket connected: {}".format(sid))
 
 
-@socket_app.on("userMessage", namespace="botMessage")
-def handle_user_message(sid, data):
-    logging.debug(data)
-    message = data.get("message")
-    response = RESPONSES.get(message, "Sorry, I do not understand")
-    socket_app.emit("botResponse", {"message": response})
+@socket_app.on("userMessage", namespace="/botMessage")
+def handle_user_message(user_json):
+    # TODO: add handler for socket message to fetch response from chatbot
+    logger.info("user message :{}".format(str(user_json)))
+    logger.debug(user_json.keys())
+    responseObj = UserMessage(user_json.get("message", {}).get("value", ""))
+    emit("botResponse", {"message": str(responseObj)})
 
 
 @app.get("/bot")
 def bot_page():
     return render_template("/bot.html")
     # except Exception as exc:
-    #     logging.exception("Could not load template: {}".format(
+    #     logger.exception("Could not load template: {}".format(
     #         str(exc)
     #     ))
     #     return "Not found", 404
@@ -97,5 +84,4 @@ if __name__ == "__main__":
         app,
         host="0.0.0.0",
         port=8080,
-        debug=True,
     )
